@@ -15,7 +15,7 @@ importers:
         specifier: ^3.1.7
         version: 3.1.7
       preact:
-        specifier: ^10.24.2
+        specifier: ^10.24.3
         version: 10.24.3
       preact-router:
         specifier: ^4.1.2
