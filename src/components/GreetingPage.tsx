@@ -244,6 +244,10 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
     },
   };
 
+  const preloadImage = new Image();
+  preloadImage.src = imageUrl;
+  preloadImage.onload = () => setImageLoading(false);
+
   return (
     <div class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-yellow-500 via-white to-rose-600 p-4">
       {loading ? (
@@ -259,12 +263,12 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
           {imageLoading ? (
               <div class="flex items-center justify-center mb-8">
                 <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
-                <span class="ml-4">Loading...</span>
+                <span class="ml-4">Image...</span>
               </div>
             ) : (
             <><img
                     src={imageUrl}
-                    alt="Diwali Greeting"
+                    alt={sanitizedName}
                     width="1080"
                     height="1080"
                     class="shadow-lg mb-5"
