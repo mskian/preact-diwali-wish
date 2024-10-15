@@ -13,7 +13,7 @@ A special ✨ Happy Diwali greetings for your friends and Family Members.
 - Tailwind CSS
 - Pure CSS Diwali Rocket
 - Greeting Messages in English, Tamil, Hindi, Telugu, Malayalam, Kannada
-- Hosting at Netlify : **<https://mydiwaliwish.netlify.app/>**  
+- Hosting at Netlify : **<https://diwali.sanweb.info/>**  
 
 ## Setup and Usage
 

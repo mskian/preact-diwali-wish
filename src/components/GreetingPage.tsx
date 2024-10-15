@@ -48,6 +48,7 @@ const Snackbar = ({ message, onClose }: { message: string; onClose: () => void }
 
 const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) => {
   const [loading, setLoading] = useState(true);
+  const [imageLoading, setImageLoading] = useState(true);
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
   const [toggleState, setToggleState] = useState(false);
   const [language, setLanguage] = useState('en');
@@ -55,6 +56,13 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
   const sanitizedName = sanitizeName(name || '');
   const currentTime = getFormattedTime();
   const currentUrl = window.location.href;
+  const slug = slugify(sanitizedName, {
+    replacement: '-',
+    remove: /[*+~.()'"!:@]/g,
+    lower: false,
+    strict: false,
+  });
+  const imageUrl = `https://img.sanweb.info/dw/dw?name=${slug}`;
 
   useEffect(() => {
     const savedToggleState = localStorage.getItem('toggleState');
@@ -73,7 +81,8 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
 
     const metaTitle = `${sanitizedName ? `${sanitizedName}` : ''} - Happy Diwali Greetings ✨`;
     const metaDescription = `Wishing you a Happy Diwali From ${sanitizedName ? `${sanitizedName}` : ''} - Check out your personalized greeting page.`;
-
+    const imageUrl = `https://img.sanweb.info/dw/dw?name=${slug}`;
+    const imageAlt = `Personalized Diwali Greeting for ${sanitizedName}`;
     document.title = metaTitle;
 
     let metaDescriptionTag = document.querySelector('meta[name="description"]') as HTMLMetaElement;
@@ -96,14 +105,66 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
       document.head.appendChild(linkCanonicalTag);
     }
 
-    return () => {
-      document.title = 'Happy Diwali Greetings ✨';
-      const metaDescriptionTag = document.querySelector('meta[name="description"]') as HTMLMetaElement;
-      if (metaDescriptionTag) metaDescriptionTag.content = '';
-      const linkCanonicalTag = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-      if (linkCanonicalTag) linkCanonicalTag.href = '';
-    };
-  }, [sanitizedName, currentUrl]);
+    const ogTags = [
+      { property: 'og:title', content: metaTitle },
+      { property: 'og:description', content: metaDescription },
+      { property: 'og:url', content: currentUrl },
+      { property: 'og:image', content: imageUrl },
+      { property: 'og:image:alt', content: imageAlt },
+      { property: 'og:mage:width', content: '1080' },
+      { property: 'og:image:height', content: '1080' },
+      { property: 'og:type', content: 'website' },
+    ];
+  
+    ogTags.forEach(({ property, content }) => {
+      let ogMetaTag = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+      if (ogMetaTag) {
+        ogMetaTag.content = content;
+      } else {
+        ogMetaTag = document.createElement('meta');
+        ogMetaTag.setAttribute('property', property);
+        ogMetaTag.content = content;
+        document.head.appendChild(ogMetaTag);
+      }
+    });
+
+    const twitterTags = [
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: metaTitle },
+      { name: 'twitter:description', content: metaDescription },
+      { name: 'twitter:image', content: imageUrl },
+      { name: 'twitter:image:alt', content: imageAlt },
+      { name: 'twitter:url', content: currentUrl },
+    ];
+  
+    twitterTags.forEach(({ name, content }) => {
+      let twitterMetaTag = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+      if (twitterMetaTag) {
+        twitterMetaTag.content = content;
+      } else {
+        twitterMetaTag = document.createElement('meta');
+        twitterMetaTag.name = name;
+        twitterMetaTag.content = content;
+        document.head.appendChild(twitterMetaTag);
+      }
+    });  
+
+  return () => {
+    document.title = 'Happy Diwali Greetings ✨';
+    if (metaDescriptionTag) metaDescriptionTag.content = '';
+    if (linkCanonicalTag) linkCanonicalTag.href = '';
+
+    ogTags.forEach(({ property }) => {
+      const ogMetaTag = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+      if (ogMetaTag) ogMetaTag.content = '';
+    });
+
+    twitterTags.forEach(({ name }) => {
+      const twitterMetaTag = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement;
+      if (twitterMetaTag) twitterMetaTag.content = '';
+    });
+  };
+}, [sanitizedName, currentUrl]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(currentUrl)
@@ -142,6 +203,13 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
     const target = e.target as HTMLSelectElement;
     setLanguage(target.value);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setImageLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [imageUrl]);
 
   const messages = {
     en: {
@@ -185,33 +253,69 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
       ) : (
         <>
           <div class="chat-container">
-          <div class="flex flex-col items-center space-y-3">
-            <label for="language-select" class="text-black font-bold">
+          <br />
+          <DiwaliRocket />
+          <br /><br />
+          {imageLoading ? (
+              <div class="flex items-center justify-center mb-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-800"></div>
+                <span class="ml-4">Loading...</span>
+              </div>
+            ) : (
+            <><img
+                    src={imageUrl}
+                    alt="Diwali Greeting"
+                    width="1080"
+                    height="1080"
+                    class="shadow-lg mb-5"
+                    loading="lazy"
+                    style={imageLoading ? { display: 'none' } : {}} />
+                    <a
+                      href={`https://img.sanweb.info/dl/file?url=${imageUrl}`}
+                      class="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 text-white px-4 py-2 rounded-full shadow-lg hover:from-purple-600 hover:via-pink-600 hover:to-yellow-600 transition-transform duration-200 transform hover:scale-105 flex items-center justify-center"
+                    >
+                      <br />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        class="w-6 h-6 mr-2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2m-5-4l-3 3m0 0l-3-3m3 3V4" />
+                      </svg>
+                      Save
+                    </a></>
+            )}
+          <br />
+          <div class="chat-box">
+              <div class="chat-bubble right shadow-md focus:outline-none transition-transform duration-200 transform hover:scale-105">
+                {sanitizedName ? `${sanitizedName} ✨` : '✨ Your Name Here'}
+              <div class="chat-time">{currentTime}</div>
+              </div>
+              <div class="flex flex-col items-center space-y-3">
+              <label for="language-select" class="text-black font-bold">
               Choose Language
-            </label>
-            <select
+              </label>
+              <select
               id="language-select"
               onChange={handleLanguageChange}
               value={language}
               class="p-2 rounded-lg shadow-lg text-black border-2 border-black focus:outline-none focus:ring focus:border-blue-300 transition duration-200"
-            >
+              >
               <option value="en">English</option>
               <option value="hi">Hindi</option>
               <option value="ta">Tamil</option>
               <option value="te">Telugu</option>
               <option value="ml">Malayalam</option>
               <option value="kn">Kannada</option>
-            </select>
-          </div>
-          <br />
-          <br />
-          <DiwaliRocket />
-          <br />
-            <div class="chat-box">
-              <div class="chat-bubble right shadow-md focus:outline-none transition-transform duration-200 transform hover:scale-105">
-                {sanitizedName ? `${sanitizedName} ✨` : '✨ Your Name Here'}
-                <div class="chat-time">{currentTime}</div>
-              </div>
+             </select>
+             </div>
+             <br />
               <div class="chat-bubble left shadow-md focus:outline-none transition-transform duration-200 transform hover:scale-105 text-base">
                 {messages[language].greeting}
                 <div class="chat-time">{currentTime}</div>
