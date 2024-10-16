@@ -40,7 +40,7 @@
       max-width: 700px;
       font-family: 'Fira Code', monospace;
       margin: 20px auto;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
     }
     .terminal-output {
       font-family: 'Fira Code', monospace;
@@ -98,7 +98,7 @@
       background-color: #00ff00;
       border: none;
       color: black;
-      padding: 10px 15px;
+      padding: 8px 15px;
       cursor: pointer;
       transition: background-color 0.3s;
       width: 100%;
@@ -155,143 +155,154 @@
 </section>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const output = document.getElementById('terminal-output');
-      const progressBar = document.getElementById('progress-bar');
-      const progressContainer = document.getElementById('terminal-progress');
-      const nameInput = document.getElementById('name-input');
-      const submitBtn = document.getElementById('submit-btn');
-      const notification = document.getElementById('notification');
-      const notificationMessage = document.getElementById('notification-message');
+document.addEventListener('DOMContentLoaded', function() {
+  const output = document.getElementById('terminal-output');
+  const progressBar = document.getElementById('progress-bar');
+  const progressContainer = document.getElementById('terminal-progress');
+  const nameInput = document.getElementById('name-input');
+  const submitBtn = document.getElementById('submit-btn');
+  const notification = document.getElementById('notification');
+  const notificationMessage = document.getElementById('notification-message');
 
-      function clearWishes() {
-        output.innerHTML = '';
-        progressBar.style.width = '0%';
-        progressContainer.classList.add('hidden');
-      }
+  const defaultText = "🦊 -> $ Enter your Name";
+  output.innerHTML = defaultText;
 
-      function validateInput(name) {
-        return name.trim().length > 0;
-      }
+  function clearWishes() {
+    output.innerHTML = '';
+    progressBar.style.width = '0%';
+    progressContainer.classList.add('hidden');
+  }
 
-      function sanitizeInput(input) {
-        const div = document.createElement('div');
-        div.innerText = input;
-        return div.innerHTML;
-      }
+  function validateInput(name) {
+    return name.trim().length > 0;
+  }
 
-      function showNotification(message, isError) {
-        notificationMessage.innerText = message;
-        notification.className = isError ? 'notification is-danger' : 'notification is-success';
-        notification.classList.remove('hidden');
+  function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.innerText = input;
+    return div.innerHTML;
+  }
+
+  function showNotification(message, isError) {
+    notificationMessage.innerText = message;
+    notification.className = isError ? 'notification is-danger' : 'notification is-success';
+    notification.classList.remove('hidden');
+    setTimeout(() => {
+      notification.classList.add('hidden');
+    }, 3000);
+  }
+
+  window.closeNotification = function() {
+    notification.classList.add('hidden');
+  }
+
+  function slugify(string) {
+    return string
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .replace(/[<>]/g, "")
+        .replace(/[()]/g, "");
+  }
+
+  const steps = [
+    '🦊 -> $ pkg install diwali\n\n',
+    'ℹ️ installing...\n',
+    '🥤 Preparing...\n',
+    '✅ Creating Wish...\n'
+  ];
+
+  let currentStep = 0;
+
+  function typeCommand(command, callback) {
+    let index = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'blinking-cursor';
+    output.appendChild(cursor);
+
+    const interval = setInterval(() => {
+      if (index < command.length) {
+        output.innerHTML += command.charAt(index);
+        index++;
+      } else {
+        clearInterval(interval);
         setTimeout(() => {
-          notification.classList.add('hidden');
-        }, 3000);
+          cursor.remove();
+          if (callback) callback();
+        }, 500);
       }
+    }, 100);
+  }
 
-      window.closeNotification = function() {
-        notification.classList.add('hidden');
+  function simulateProgress(callback) {
+    progressContainer.classList.remove('hidden');
+    let width = 0;
+    const interval = setInterval(() => {
+      if (width >= 100) {
+        clearInterval(interval);
+        progressContainer.classList.add('hidden');
+        if (callback) callback();
+      } else {
+        width++;
+        progressBar.style.width = width + '%';
+        document.getElementById('progress-percent').innerText = width + '%';
       }
+    }, 50);
+  }
 
-      function slugify(string) {
-        return string
-            .toString()
-            .trim()
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-+|-+$/g, "")
-            .replace(/[<>]/g, "")
-            .replace(/[()]/g, "");
+  function showWishes(name) {
+    const sanitizedName = sanitizeInput(name);
+    const username = slugify(sanitizedName);
+    const wishes = `\n🎉 Wishing you a Happy Diwali ${sanitizedName} 🪔 \n😊 Filled with light, love, and simple joys 🎇\n\n⚡ Greeting URL : https://diwali.sanweb.info/${username}\n\n`;
+    let index = 0;
+    const typingInterval = setInterval(() => {
+      if (index < wishes.length) {
+        output.innerHTML += wishes.charAt(index);
+        index++;
+      } else {
+        clearInterval(typingInterval);
       }
+    }, 80);
+  }
 
-      const steps = [
-        '🦊 -> $ pkg install diwali\n\n',
-        'ℹ️ installing...\n',
-        '🥤 Preparing...\n',
-        '✅ Creating Wish...\n'
-      ];
+  function showDefaultMessage() {
+    const defaultMessage = "\nNo name entered! Please provide your name to create a personalized Diwali greeting.\n";
+    output.innerHTML = defaultMessage;
+  }
 
-      let currentStep = 0;
-
-      function typeCommand(command, callback) {
-        let index = 0;
-        const cursor = document.createElement('span');
-        cursor.className = 'blinking-cursor';
-        output.appendChild(cursor);
-
-        const interval = setInterval(() => {
-          if (index < command.length) {
-            output.innerHTML += command.charAt(index);
-            index++;
-          } else {
-            clearInterval(interval);
-            setTimeout(() => {
-              cursor.remove();
-              if (callback) callback();
-            }, 500);
-          }
-        }, 100);
-      }
-
-      function simulateProgress(callback) {
-        progressContainer.classList.remove('hidden');
-        let width = 0;
-        const interval = setInterval(() => {
-          if (width >= 100) {
-            clearInterval(interval);
-            progressContainer.classList.add('hidden');
-            if (callback) callback();
-          } else {
-            width++;
-            progressBar.style.width = width + '%';
-            document.getElementById('progress-percent').innerText = width + '%';
-          }
-        }, 50);
-      }
-
-      function showWishes(name) {
-        const sanitizedName = sanitizeInput(name);
-        const username = slugify(sanitizedName);
-        const wishes = `\n🎉 Wishing you a Happy Diwali ${sanitizedName} 🪔 \nfilled with light, love, and simple joys 🎇\n\nGreeting URL : https://diwali.sanweb.info/${username}\n\n`;
-        let index = 0;
-        const typingInterval = setInterval(() => {
-          if (index < wishes.length) {
-            output.innerHTML += wishes.charAt(index);
-            index++;
-          } else {
-            clearInterval(typingInterval);
-          }
-        }, 80);
-      }
-
-      function showSteps(name) {
-        if (currentStep < steps.length) {
-          typeCommand(steps[currentStep], () => {
-            currentStep++;
-            if (currentStep === 4) {
-              simulateProgress(() => {
-                showWishes(name);
-                currentStep = 0;
-              });
-            } else {
-              showSteps(name);
-            }
+  function showSteps(name) {
+    if (currentStep < steps.length) {
+      typeCommand(steps[currentStep], () => {
+        currentStep++;
+        if (currentStep === 4) {
+          simulateProgress(() => {
+            showWishes(name);
+            currentStep = 0;
           });
-        }
-      }
-
-      submitBtn.addEventListener('click', () => {
-        const name = nameInput.value.trim();
-        if (validateInput(name)) {
-          clearWishes();
-          showSteps(name);
-          nameInput.value = '';
         } else {
-          showNotification('Please enter a valid name.', true);
+          showSteps(name);
         }
       });
-    });
+    }
+  }
+
+  submitBtn.addEventListener('click', () => {
+    const name = nameInput.value.trim();
+    if (validateInput(name)) {
+      clearWishes();
+      showSteps(name);
+      nameInput.value = '';
+    } else {
+      clearWishes();
+      showDefaultMessage();
+      showNotification('Please enter a valid name.', true);
+    }
+  });
+});
+
 </script>
 
 </body>
