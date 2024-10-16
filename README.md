@@ -15,6 +15,8 @@ A special ✨ Happy Diwali greetings for your friends and Family Members.
 - Greeting Messages in English, Tamil, Hindi, Telugu, Malayalam, Kannada
 - Hosting at Netlify : **<https://diwali.sanweb.info/>**  
 
+> Create Diwali Wishes : **<https://diwali.sanweb.info/terminal>**  
+
 ## Setup and Usage
 
 - Clone or Download the Repo

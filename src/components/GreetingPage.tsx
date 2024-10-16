@@ -1,5 +1,6 @@
 import { JSX } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
+import { FaFacebook, FaWhatsapp, FaTelegram, FaShareAlt } from 'react-icons/fa';
 import DOMPurify from 'dompurify';
 import slugify from 'slugify';
 import DiwaliRocket from '../components/DiwaliRocket';
@@ -211,6 +212,40 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
     return () => clearTimeout(timer);
   }, [imageUrl]);
 
+  const shareTitle = `${sanitizedName} - Sending You the Happy Diwali Greetings ✨`;
+  const shareDescription = `Happy Diwali From Wishes From : ${sanitizedName}`;
+
+  const handleNativeShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: shareTitle,
+        text: shareDescription,
+        url: currentUrl,
+      }).catch(() => setSnackbarMessage('oops Not Sharing.'));
+    } else {
+      setSnackbarMessage('Native sharing is only available on mobile devices.');
+    }
+  };
+
+  const shareLink = (platform: string) => {
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + ' ' + currentUrl)}`;
+        break;
+      case 'telegram':
+        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(shareTitle)}`;
+        break;
+      default:
+        break;
+    }
+    window.open(shareUrl, '_blank', 'noopener noreferrer');
+  };
+
   const messages = {
     en: {
       greeting: `Happy Diwali Wishes ✨`,
@@ -334,6 +369,41 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
               </div>
             </div>
           </div>
+            <div class="flex flex-col items-center space-y-4">
+            <div class="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center">
+            <p class="text-lg font-bold mb-4">Share Your Greeting</p>
+            <div class="flex space-x-4">
+            <button 
+              class="bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full p-3"
+              onClick={() => shareLink('facebook')}
+            >
+              <FaFacebook size={22} />
+            </button>
+            <button 
+              class="bg-gradient-to-r from-green-500 to-green-700 text-white rounded-full p-3"
+              onClick={() => shareLink('whatsapp')}
+            >
+              <FaWhatsapp size={22} />
+            </button>
+            <button 
+              class="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full p-3"
+              onClick={() => shareLink('telegram')}
+            >
+              <FaTelegram size={22} />
+            </button>
+            <button 
+              class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full p-3"
+              onClick={handleNativeShare}
+            >
+              <FaShareAlt size={22} />
+            </button>
+            </div>
+            <br />
+            <button onClick={redirectToHome} class="bg-gradient-to-r from-green-400 to-green-600 text-white px-4 py-2 rounded-lg shadow-md hover:from-green-500 hover:to-green-700">
+                Create
+            </button>
+            </div>
+            </div>
           <br />
           <div class="mb-4">
             <label class="flex items-center cursor-pointer">

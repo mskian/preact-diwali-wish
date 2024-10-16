@@ -1,0 +1,298 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link href="/192.png" rel="icon" sizes="196x196" type="image/png">
+<link href="/180.png" rel="apple-touch-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Create Happy Diwali Greeting Wishes</title>
+<meta name="description" content="Happy Diwali Wishes image with Name Greeting Generator."/>
+<link rel="canonical" href="https://diwali.sanweb.info/terminal" />
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css" integrity="sha512-RpeJZX3aH5oZN3U3JhE7Sd+HG8XQsqmP3clIbu4G28p668yNsRNj3zMASKe1ATjl/W80wuEtCx2dFA8xaebG5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+      background-color: #000;
+      color: #00ff00;
+      font-family: 'Fira Code', monospace;
+      min-height: 100vh;
+    }
+    .user-form {
+      background-color: #0d0208;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 700px;
+      font-family: 'Fira Code', monospace;
+      margin: 20px auto;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+    .terminal {
+      background-color: #0d0208;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 700px;
+      font-family: 'Fira Code', monospace;
+      margin: 20px auto;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+    .terminal-output {
+      font-family: 'Fira Code', monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      font-size: 1.0rem;
+      line-height: 1.5;
+      min-height: 200px;
+      margin-top: 10px;
+    }
+    .terminal-progress {
+      background-color: #444;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      background-color: #00ff00;
+      height: 100%;
+      width: 0;
+    }
+    .command-line {
+      font-family: 'Fira Code', monospace;
+      color: #00ff00;
+    }
+    .blinking-cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00ff00;
+      animation: blink 1s infinite;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .hidden {
+      display: none;
+    }
+    .form-input {
+      font-family: 'Fira Code', monospace;
+      background-color: #0d0208;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+    }
+    .form-input:focus {
+      border-color: #00cc00;
+      outline: none;
+    }
+    .button {
+      font-family: 'Fira Code', monospace;
+      background-color: #00ff00;
+      border: none;
+      color: black;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      width: 100%;
+    }
+    .button:hover {
+      background-color: #00cc00;
+    }
+    .spacer {
+      margin-bottom: 15px;
+    }
+    .ascii-art {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #00ff00;
+      white-space: pre;
+    }
+    .notification {
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 15px;
+    }
+    .close-button {
+      background: transparent;
+      border: none;
+      color: #fff;
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+
+<section class="section">
+    <div class="container">
+      <div class="user-form">
+        <div id="notification" class="notification is-danger hidden">
+          <button class="close-button" onclick="closeNotification()">&times;</button>
+          <span id="notification-message"></span>
+        </div>
+        <input type="text" id="name-input" class="input form-input" placeholder="Enter your name" required>
+        <br><br>
+        <button id="submit-btn" class="button">Submit</button>
+      </div>
+      <br>
+      <div class="terminal">
+        <div class="terminal-output" id="terminal-output"></div>
+        <div class="terminal-progress hidden" id="terminal-progress">
+          <div class="progress-bar" id="progress-bar"></div>
+          <div class="progress-percent" id="progress-percent"></div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const output = document.getElementById('terminal-output');
+      const progressBar = document.getElementById('progress-bar');
+      const progressContainer = document.getElementById('terminal-progress');
+      const nameInput = document.getElementById('name-input');
+      const submitBtn = document.getElementById('submit-btn');
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notification-message');
+
+      function clearWishes() {
+        output.innerHTML = '';
+        progressBar.style.width = '0%';
+        progressContainer.classList.add('hidden');
+      }
+
+      function validateInput(name) {
+        return name.trim().length > 0;
+      }
+
+      function sanitizeInput(input) {
+        const div = document.createElement('div');
+        div.innerText = input;
+        return div.innerHTML;
+      }
+
+      function showNotification(message, isError) {
+        notificationMessage.innerText = message;
+        notification.className = isError ? 'notification is-danger' : 'notification is-success';
+        notification.classList.remove('hidden');
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 3000);
+      }
+
+      window.closeNotification = function() {
+        notification.classList.add('hidden');
+      }
+
+      function slugify(string) {
+        return string
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "")
+            .replace(/[<>]/g, "")
+            .replace(/[()]/g, "");
+      }
+
+      const steps = [
+        '🦊 -> $ pkg install diwali\n\n',
+        'ℹ️ installing...\n',
+        '🥤 Preparing...\n',
+        '✅ Creating Wish...\n'
+      ];
+
+      let currentStep = 0;
+
+      function typeCommand(command, callback) {
+        let index = 0;
+        const cursor = document.createElement('span');
+        cursor.className = 'blinking-cursor';
+        output.appendChild(cursor);
+
+        const interval = setInterval(() => {
+          if (index < command.length) {
+            output.innerHTML += command.charAt(index);
+            index++;
+          } else {
+            clearInterval(interval);
+            setTimeout(() => {
+              cursor.remove();
+              if (callback) callback();
+            }, 500);
+          }
+        }, 100);
+      }
+
+      function simulateProgress(callback) {
+        progressContainer.classList.remove('hidden');
+        let width = 0;
+        const interval = setInterval(() => {
+          if (width >= 100) {
+            clearInterval(interval);
+            progressContainer.classList.add('hidden');
+            if (callback) callback();
+          } else {
+            width++;
+            progressBar.style.width = width + '%';
+            document.getElementById('progress-percent').innerText = width + '%';
+          }
+        }, 50);
+      }
+
+      function showWishes(name) {
+        const sanitizedName = sanitizeInput(name);
+        const username = slugify(sanitizedName);
+        const wishes = `\n🎉 Wishing you a Happy Diwali ${sanitizedName} 🪔 \nfilled with light, love, and simple joys 🎇\n\nGreeting URL : https://diwali.sanweb.info/${username}\n\n`;
+        let index = 0;
+        const typingInterval = setInterval(() => {
+          if (index < wishes.length) {
+            output.innerHTML += wishes.charAt(index);
+            index++;
+          } else {
+            clearInterval(typingInterval);
+          }
+        }, 80);
+      }
+
+      function showSteps(name) {
+        if (currentStep < steps.length) {
+          typeCommand(steps[currentStep], () => {
+            currentStep++;
+            if (currentStep === 4) {
+              simulateProgress(() => {
+                showWishes(name);
+                currentStep = 0;
+              });
+            } else {
+              showSteps(name);
+            }
+          });
+        }
+      }
+
+      submitBtn.addEventListener('click', () => {
+        const name = nameInput.value.trim();
+        if (validateInput(name)) {
+          clearWishes();
+          showSteps(name);
+          nameInput.value = '';
+        } else {
+          showNotification('Please enter a valid name.', true);
+        }
+      });
+    });
+</script>
+
+</body>
+</html>
