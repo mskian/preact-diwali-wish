@@ -13,6 +13,7 @@
 
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css" integrity="sha512-RpeJZX3aH5oZN3U3JhE7Sd+HG8XQsqmP3clIbu4G28p668yNsRNj3zMASKe1ATjl/W80wuEtCx2dFA8xaebG5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -127,6 +128,9 @@
       font-size: 1.5rem;
       cursor: pointer;
     }
+    #copy-btn .icon {
+      margin-right: 5px;
+    }
 </style>
 
 </head>
@@ -146,6 +150,13 @@
       <br>
       <div class="terminal">
         <div class="terminal-output" id="terminal-output"></div>
+        <button id="copy-btn" class="button is-small hidden">
+          <span class="icon">
+            <i class="fas fa-clipboard"></i>
+          </span>
+          <span>Copy URL</span>
+        </button>
+        <br />
         <div class="terminal-progress hidden" id="terminal-progress">
           <div class="progress-bar" id="progress-bar"></div>
           <div class="progress-percent" id="progress-percent"></div>
@@ -163,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const submitBtn = document.getElementById('submit-btn');
   const notification = document.getElementById('notification');
   const notificationMessage = document.getElementById('notification-message');
+  const copyBtn = document.getElementById('copy-btn');
 
   const defaultText = "🦊 -> $";
   output.innerHTML = defaultText;
@@ -171,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     output.innerHTML = '';
     progressBar.style.width = '0%';
     progressContainer.classList.add('hidden');
+    copyBtn.classList.add('hidden');
   }
 
   function validateInput(name) {
@@ -198,14 +211,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function slugify(string) {
     return string
-        .toString()
-        .trim()
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .replace(/[<>]/g, "")
-        .replace(/[()]/g, "");
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .replace(/[<>]/g, "")
+      .replace(/[()]/g, "");
   }
 
   const steps = [
@@ -256,7 +269,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function showWishes(name) {
     const sanitizedName = sanitizeInput(name);
     const username = slugify(sanitizedName);
-    const wishes = `\n🎉 Wishing you a Happy Diwali ${sanitizedName} 🪔 \n😊 Filled with light, love, and simple joys 🎇\n\n⚡ Greeting URL : https://diwali.sanweb.info/${username}\n\n`;
+    const greetingURL = `https://diwali.sanweb.info/${username}`;
+    const wishes = `\n🎉 Wishing you a Happy Diwali ${sanitizedName} 🪔 \n😊 Filled with light, love, and simple joys 🎇\n\n`;
+
     let index = 0;
     const typingInterval = setInterval(() => {
       if (index < wishes.length) {
@@ -264,6 +279,8 @@ document.addEventListener('DOMContentLoaded', function() {
         index++;
       } else {
         clearInterval(typingInterval);
+        copyBtn.classList.remove('hidden');
+        copyBtn.dataset.url = greetingURL;
       }
     }, 80);
   }
@@ -300,6 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
       showDefaultMessage();
       showNotification('Please enter a valid name.', true);
     }
+  });
+
+  copyBtn.addEventListener('click', () => {
+    const urlToCopy = copyBtn.dataset.url;
+    navigator.clipboard.writeText(urlToCopy).then(() => {
+      showNotification('URL copied to clipboard!', false);
+    }).catch(() => {
+      showNotification('Failed to copy URL.', true);
+    });
   });
 });
 
