@@ -107,6 +107,7 @@ const GreetingPage = (props: GreetingPageProps & JSX.IntrinsicElements['div']) =
     }
 
     const ogTags = [
+      { property: 'og:site_name', content: metaTitle },
       { property: 'og:title', content: metaTitle },
       { property: 'og:description', content: metaDescription },
       { property: 'og:url', content: currentUrl },

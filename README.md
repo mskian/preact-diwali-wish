@@ -2,7 +2,9 @@
 
 [![build-test](https://github.com/mskian/preact-diwali-wish/actions/workflows/build.yml/badge.svg)](https://github.com/mskian/preact-diwali-wish/actions/workflows/build.yml)  
 
-A special ✨ Happy Diwali greetings for your friends and Family Members.  
+Diwali Wishes with Name - A special ✨ Happy Diwali greetings for your friends and Family Members.  
+
+> Free Diwali Greetings personalised with your name/image - Happy Diwali Greeting Card with name  
 
 ## Built Using
 
@@ -13,9 +15,11 @@ A special ✨ Happy Diwali greetings for your friends and Family Members.
 - Tailwind CSS
 - Pure CSS Diwali Rocket
 - Greeting Messages in English, Tamil, Hindi, Telugu, Malayalam, Kannada
-- Hosting at Netlify : **<https://diwali.sanweb.info/>**  
+- Hosting at Netlify
 
-> Create Diwali Wishes : **<https://diwali.sanweb.info/terminal>**  
+Create Happy Diwali Greeting image with your Name in English - **<https://diwali.sanweb.info/>**  
+
+> Create Diwali Wishes Link : **<https://diwali.sanweb.info/terminal>**  
 
 ## Setup and Usage
 
@@ -43,6 +47,8 @@ pnpm dev
 ```sh
 pnpm build
 ```
+
+> Happy Diwali Wishes Greeting image Maker with Name | Diwali image Maker | Diwali Greeting Generator  
 
 ## LICENSE
 
