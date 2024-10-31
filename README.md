@@ -16,6 +16,7 @@ Diwali Wishes with Name - A special ✨ Happy Diwali greetings for your friends 
 - Pure CSS Diwali Rocket
 - Greeting Messages in English, Tamil, Hindi, Telugu, Malayalam, Kannada
 - Hosting at Netlify
+- Analytics - **<https://umami.is/>**
 
 Create Happy Diwali Greeting image with your Name in English - **<https://diwali.sanweb.info/>**  
 
