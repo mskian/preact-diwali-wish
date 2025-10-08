@@ -1,7 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-  
+@import "tailwindcss";
+
 html {
 	font-family: "Hind Madurai", sans-serif;
 	min-height: 100vh;
