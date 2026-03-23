@@ -31,8 +31,8 @@ importers:
         version: 4.2.1
     devDependencies:
       '@preact/preset-vite':
-        specifier: ^2.10.4
-        version: 2.10.4(@babel/core@7.25.2)(preact@10.29.0)(rollup@4.52.4)(vite@7.3.1(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.5.0))
+        specifier: ^2.10.5
+        version: 2.10.5(@babel/core@7.25.2)(preact@10.29.0)(rollup@4.52.4)(vite@7.3.1(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.5.0))
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -315,8 +315,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@preact/preset-vite@2.10.4':
-    resolution: {integrity: sha512-L7RQRs2GiG0lLUz7JSg07vU6lhlzdIthH0eqYZmRR70tTB9ikKCq2LHr+PZzhzIOco3Dioi6P6e/fjAmDUMJbQ==}
+  '@preact/preset-vite@2.10.5':
+    resolution: {integrity: sha512-p0vJpxiVO7KWWazWny3LUZ+saXyZKWv6Ju0bYMWNJRp2YveufRPgSUB1C4MTqGJfz07EehMgfN+AJNwQy+w6Iw==}
     peerDependencies:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x || 6.x || 7.x || 8.x
@@ -1175,7 +1175,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@preact/preset-vite@2.10.4(@babel/core@7.25.2)(preact@10.29.0)(rollup@4.52.4)(vite@7.3.1(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.5.0))':
+  '@preact/preset-vite@2.10.5(@babel/core@7.25.2)(preact@10.29.0)(rollup@4.52.4)(vite@7.3.1(jiti@2.6.1)(lightningcss@1.31.1)(yaml@2.5.0))':
     dependencies:
       '@babel/core': 7.25.2
       '@babel/plugin-transform-react-jsx': 7.28.6(@babel/core@7.25.2)
